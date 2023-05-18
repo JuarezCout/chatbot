@@ -1,5 +1,7 @@
 const chatForm = document.getElementById("chat-form");
 const chatMessages = document.querySelector(".chat-messages");
+const roomName = document.getElementById("room-name");
+const userList = document.getElementById("users");
 
 //Get user name and room from URL
 const { username, room } = Qs.parse(location.search, {
@@ -15,6 +17,11 @@ socket.on("message", (message) => {
 
   // Scroll down
   chatMessages.scrollTop = chatMessages.scrollHeight;
+});
+
+socket.on("roomUsers", ({ room, users }) => {
+  outputRoomName(room);
+  outputRoomUsers(users);
 });
 
 // Event listener to all changes to chat form
@@ -38,4 +45,14 @@ function outputMessage(message) {
     </p>
   `;
   document.querySelector(".chat-messages").appendChild(div);
+}
+
+function outputRoomName(room) {
+  roomName.innerText = room;
+}
+
+function outputRoomUsers(users) {
+  userList.innerHTML = `
+    ${users.map((user) => `<li>${user.username}</li>`).join("")}
+  `;
 }
